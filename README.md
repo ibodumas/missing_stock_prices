@@ -5,3 +5,8 @@ A time series of a stock's highest price during a trading day (at the New York S
 - model: is a broad implementation of the project.
 - jupy_note: is a Jupyter notebook version of the project.
 - plots: png and html plots pertaining to input00.
+
+Models are:
+- Spline Interpolation
+- (To be completed)
+- (To be completed)
