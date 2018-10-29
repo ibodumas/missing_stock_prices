@@ -10,24 +10,23 @@ from sklearn.model_selection import ParameterGrid
 from sklearn import metrics
 
 
-def spline_interpolation(train, x_test, **kwargs):
+def spline_interpolation(train, **kwargs):
     """
     :param train: Pandas DataFrame - Stock prices with some missing values. dim = (n, 2)
-    :param x_test: Pandas Series - feature value of the needed prediction.
     :param kwargs: dict with keys degree_spline and smoothing_factor
-                1. degree_spline: int - Degree of the smoothing spline. Must be <= 5. Default is k=3, a cubic spline.
-                2. smoothing_factor: float - Smoothing factor used to choose the no. of knots.
-                   No. of knots will be increased until the smoothing condition is satisfied.
-    :return: Numpy Array - estimated missing prices
+                1. degree_spline: int - Degree of the smoothing spline. Must be <= 5.
+                Default is k=3, a cubic spline.
+                2. smoothing_factor: float - Smoothing factor used to choose the
+                no. of knots. No. of knots will be increased until the smoothing
+                condition is satisfied.
+    :return: A function that holds the trained model.
     """
 
     spline_model = spline(
         train.x, train.y, k=kwargs["degree_spline"], s=kwargs["smoothing_factor"]
     )
 
-    # predict the missing price using the fitted model
-    pred_price = spline_model(x_test)
-    return pred_price
+    return spline_model
 
 
 param_grid = ParameterGrid(
