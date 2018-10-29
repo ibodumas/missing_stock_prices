@@ -4,10 +4,11 @@ This uses low-degree polynomials, and selects polynomial pieces in order to opti
 Univariate-Spline: It's a form of spline involving one variable.
 """
 from model import util
-from model import data_processing
+from model.data_processing import data_preprocessing
 from scipy.interpolate import UnivariateSpline as spline
 from sklearn.model_selection import ParameterGrid
 from sklearn import metrics
+import pandas as pd
 
 
 def spline_interpolation(train, **kwargs):
@@ -29,28 +30,101 @@ def spline_interpolation(train, **kwargs):
     return spline_model
 
 
+# Specify the data to be loaded.
+# Change the input data to work through other a specific file.
+input_file = "input00.txt"
+output_file = "output00.txt"
+DATA_TRAINING, DATA_MISSING, ACTUAL_PRICES = data_preprocessing(input_file, output_file)
+
+
+# Find optimal Parameters via grid search
+degree_spline = [2, 3, 4, 5]
+smoothing_factor = [2, 3, 4, 5]
+
 param_grid = ParameterGrid(
-    dict(degree_spline=[1, 2, 3], smoothing_factor=[2, 3, 4, 5, 6])
+    dict(degree_spline=degree_spline, smoothing_factor=smoothing_factor)
 )
 
 grid_search_result = util.grid_search(
-    data_processing.DATA_TRAINING, model=spline_interpolation, param_grid=param_grid
+    DATA_TRAINING, model=spline_interpolation, param_grid=param_grid
 )
-grid_search_result
 
-# get the optimal parameters
-best_degree_spline = grid_search_result.degree_spline[0]
-best_smoothing_factor = grid_search_result.smoothing_factor[0]
+grid_search_result.sort_values(['Train_MSE', 'Validation_MSE']).head()
 
-# use the optimal parameters to train the model on the entire data (excluding missing price)
-# And predict the missing prices
+util.heatmap(
+    grid_search_result.Train_MSE,
+    degree_spline,
+    smoothing_factor,
+    "Heatmap of Training MSE",
+)
+
+util.heatmap(
+    grid_search_result.Validation_MSE,
+    degree_spline,
+    smoothing_factor,
+    "Heatmap of Validation MSE",
+)
+
+# Predict the missing stock prices
+# - while choosing the set of parameters needed for bias-variance tradeoff.
+# - degree_spline=3 and smoothing_factor=3 will be used because it performs better across the 3 input files.
+
 pred_missing_prices = spline_interpolation(
-    data_processing.DATA_TRAINING,
-    data_processing.DATA_MISSING.x,
+    DATA_TRAINING,
     degree_spline=3,
-    smoothing_factor=2,
+    smoothing_factor=3
+)(DATA_MISSING.x)
+
+pd.DataFrame(
+    {
+        "predicted missing prices": pred_missing_prices,
+        "Actual": ACTUAL_PRICES.iloc[:, 0].tolist(),
+    },
+    index=DATA_MISSING.x.tolist()
+).head()
+
+# The Mean Square Error:
+round(metrics.mean_squared_error(pred_missing_prices, ACTUAL_PRICES), 6)
+
+# Visualization
+# - Using an interactive plot
+
+# Combine actual data with the predicted prices
+x_y_predictd = DATA_MISSING.copy()
+x_y_predictd.y = pred_missing_prices
+all_with_pred = pd.concat([DATA_TRAINING, x_y_predictd])
+all_with_pred = all_with_pred.sort_values('x')
+
+# Combine actual data
+all_x_y_actual = DATA_MISSING.copy()
+all_x_y_actual.y = ACTUAL_PRICES.iloc[:, 0].tolist()
+all_with_actual = pd.concat([DATA_TRAINING, all_x_y_actual])
+
+# plot 1
+fig = figure(
+    title="Viewing the closeness of Actual vs. Predicting values of the Missing Stock Prices",
+    width=950,
+    height=700,
 )
 
-mse_pred_missing = metrics.mean_squared_error(
-    pred_missing_prices, data_processing.ACTUAL_PRICES
+fig.title.text_font_size = "20px"
+source = ColumnDataSource(
+    data=dict(x=all_x_y_actual.x, y=all_x_y_actual.y, pointer=range(1, 21))
 )
+fig.scatter(x="x", y="y", color="navy", legend=["Actual"], source=source)
+fig.scatter(x_y_predictd.x, x_y_predictd.y, color="firebrick", legend=["Predicted"])
+fig.xaxis[0].axis_label = "Ordered Period (x)"
+fig.yaxis[0].axis_label = "Stock Prices (y)"
+labels = LabelSet(
+    x="x",
+    y="y",
+    text="pointer",
+    level="glyph",
+    x_offset=5,
+    y_offset=5,
+    source=source,
+    render_mode="canvas",
+)
+
+fig.add_layout(labels)
+show(fig)

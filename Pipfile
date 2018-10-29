@@ -6,11 +6,10 @@ name = "pypi"
 [packages]
 pandas = "*"
 numpy = "*"
-numba = "*"
+scipy = "*"
 matplotlib = "*"
 bokeh = "*"
 sklearn = "*"
-tabulate = "*"
 
 [dev-packages]
 
