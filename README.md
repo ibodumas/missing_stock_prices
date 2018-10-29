@@ -6,7 +6,11 @@ A time series of a stock's highest price during a trading day (at the New York S
 - jupy_note: is a Jupyter notebook version of the project.
 - plots: png and html plots pertaining to input00.
 
-Models are:
+##### Models are:
 - Spline Interpolation
 - (To be completed)
 - (To be completed)
+
+
+##### To easily replicate the project
+Run "pipenv shell" from the project root directory, this will create a VIRTUAL ENVIRONMENT and install all the project dependencies in it.
