@@ -6,6 +6,9 @@ from sklearn import metrics
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from bokeh.plotting import figure, show
+from bokeh.models import LabelSet, ColumnDataSource
+from bokeh.layouts import row
 
 
 def grid_search(data_training, model, param_grid):
@@ -65,4 +68,83 @@ def heatmap(metric, x_axis, y_axis, title):
     plt.yticks(np.arange(4), y_axis)
     plt.title(title)
     plt.show()
+
+
+def visualizations(x_y_actual, x_y_predict, all_with_actual, all_with_pred):
+    """
+    plot 1: Viewing the closeness of Actual vs. Predicting values of the Missing Stock Prices
+
+    plot 2: side-by-side
+     - All data with the actual values of the missing prices
+     - All data with the estimated values of the missing prices
+
+    plot 3: Positioning the side-by-side plots above in a single view
+
+    :param x_y_actual: (x, y) Pandas DataFrame of the actual missing stock prices
+    :param x_y_predict: (x, y) Pandas DataFrame of the predicted missing stock prices
+    :param all_with_actual: (x, y) Pandas DataFrame of all data with the actual missing stock prices
+    :param all_with_pred: (x, y) Pandas DataFrame of all data with the predicted missing stock prices
+    :return: None. Render the plots.
+    """
+
+    fig = figure(
+        title="Viewing the closeness of Actual vs. Predicting values of the Missing Stock Prices",
+        width=950,
+        height=700,
+    )
+
+    fig.title.text_font_size = "20px"
+    source = ColumnDataSource(
+        data=dict(x=x_y_actual.x, y=x_y_actual.y, pointer=range(1, 21))
+    )
+    fig.scatter(x="x", y="y", color="navy", legend=["Actual"], source=source)
+    fig.scatter(x_y_predict.x, x_y_predict.y, color="firebrick", legend=["Predicted"])
+    fig.xaxis[0].axis_label = "Ordered Period (x)"
+    fig.yaxis[0].axis_label = "Stock Prices (y)"
+    labels = LabelSet(
+        x="x",
+        y="y",
+        text="pointer",
+        level="glyph",
+        x_offset=5,
+        y_offset=5,
+        source=source,
+        render_mode="canvas",
+    )
+
+    fig.add_layout(labels)
+    show(fig)
+
+    # plot 2
+    fig_act = figure(
+        plot_width=475,
+        plot_height=300,
+        title="All data with the actual values of the missing prices",
+    )
+    fig_act.scatter(all_with_actual.x, all_with_actual.y, color="navy")
+    fig_act.xaxis[0].axis_label = "Ordered Period (x)"
+    fig_act.yaxis[0].axis_label = "Stock Prices (y)"
+
+    fig_pred = figure(
+        plot_width=475,
+        plot_height=300,
+        title="All data with the estimated values of the missing prices",
+    )
+    fig_pred.scatter(all_with_pred.x, all_with_pred.y, color="firebrick")
+    fig_pred.xaxis[0].axis_label = "Ordered Period (x)"
+    fig_pred.yaxis[0].axis_label = "Stock Prices (y)"
+
+    show(row(fig_act, fig_pred))
+
+    # plot 3
+    fig = figure(
+        title="Positioning the side-by-side plots above in a single view", width=900
+    )
+    fig.scatter(all_with_pred.x, all_with_pred.y, color="firebrick", legend=["Predicted"])
+    fig.scatter(all_with_actual.x, all_with_actual.y, color="navy", legend=["Actual"])
+    fig.xaxis[0].axis_label = "Ordered Period (x)"
+    fig.yaxis[0].axis_label = "Stock Prices (y)"
+    show(fig)
+
+
 

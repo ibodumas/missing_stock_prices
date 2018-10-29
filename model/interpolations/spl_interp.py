@@ -49,7 +49,7 @@ grid_search_result = util.grid_search(
     DATA_TRAINING, model=spline_interpolation, param_grid=param_grid
 )
 
-grid_search_result.sort_values(['Train_MSE', 'Validation_MSE']).head()
+grid_search_result.sort_values(["Train_MSE", "Validation_MSE"]).head()
 
 util.heatmap(
     grid_search_result.Train_MSE,
@@ -70,9 +70,7 @@ util.heatmap(
 # - degree_spline=3 and smoothing_factor=3 will be used because it performs better across the 3 input files.
 
 pred_missing_prices = spline_interpolation(
-    DATA_TRAINING,
-    degree_spline=3,
-    smoothing_factor=3
+    DATA_TRAINING, degree_spline=3, smoothing_factor=3
 )(DATA_MISSING.x)
 
 pd.DataFrame(
@@ -80,51 +78,30 @@ pd.DataFrame(
         "predicted missing prices": pred_missing_prices,
         "Actual": ACTUAL_PRICES.iloc[:, 0].tolist(),
     },
-    index=DATA_MISSING.x.tolist()
+    index=DATA_MISSING.x.tolist(),
 ).head()
 
 # The Mean Square Error:
 round(metrics.mean_squared_error(pred_missing_prices, ACTUAL_PRICES), 6)
 
-# Visualization
-# - Using an interactive plot
 
 # Combine actual data with the predicted prices
-x_y_predictd = DATA_MISSING.copy()
-x_y_predictd.y = pred_missing_prices
-all_with_pred = pd.concat([DATA_TRAINING, x_y_predictd])
-all_with_pred = all_with_pred.sort_values('x')
+x_y_predict = DATA_MISSING.copy()
+x_y_predict.y = pred_missing_prices
+all_with_pred = pd.concat([DATA_TRAINING, x_y_predict])
+all_with_pred = all_with_pred.sort_values("x")
 
 # Combine actual data
-all_x_y_actual = DATA_MISSING.copy()
-all_x_y_actual.y = ACTUAL_PRICES.iloc[:, 0].tolist()
-all_with_actual = pd.concat([DATA_TRAINING, all_x_y_actual])
+x_y_actual = DATA_MISSING.copy()
+x_y_actual.y = ACTUAL_PRICES.iloc[:, 0].tolist()
+all_with_actual = pd.concat([DATA_TRAINING, x_y_actual])
 
-# plot 1
-fig = figure(
-    title="Viewing the closeness of Actual vs. Predicting values of the Missing Stock Prices",
-    width=950,
-    height=700,
-)
 
-fig.title.text_font_size = "20px"
-source = ColumnDataSource(
-    data=dict(x=all_x_y_actual.x, y=all_x_y_actual.y, pointer=range(1, 21))
+# Visualization
+# - Using an interactive plot
+util.visualizations(
+    x_y_actual=x_y_actual,
+    x_y_predict=x_y_predict,
+    all_with_actual=all_with_actual,
+    all_with_pred=all_with_pred,
 )
-fig.scatter(x="x", y="y", color="navy", legend=["Actual"], source=source)
-fig.scatter(x_y_predictd.x, x_y_predictd.y, color="firebrick", legend=["Predicted"])
-fig.xaxis[0].axis_label = "Ordered Period (x)"
-fig.yaxis[0].axis_label = "Stock Prices (y)"
-labels = LabelSet(
-    x="x",
-    y="y",
-    text="pointer",
-    level="glyph",
-    x_offset=5,
-    y_offset=5,
-    source=source,
-    render_mode="canvas",
-)
-
-fig.add_layout(labels)
-show(fig)
