@@ -12,6 +12,5 @@ A time series of a stock's highest price during a trading day (at the New York S
 - (To be completed)
 - (To be completed)
 
-
 ##### To easily replicate the project:
-Run "pipenv shell" from the project root directory, this will create a VIRTUAL ENVIRONMENT and install all the project dependencies in it.
+Run "pipenv shell" from the project root directory, this will create a VIRTUAL ENVIRONMENT and install all dependencies in it.
