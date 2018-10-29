@@ -9,6 +9,7 @@ import numpy as np
 from bokeh.plotting import figure, show
 from bokeh.models import LabelSet, ColumnDataSource
 from bokeh.layouts import row
+from bokeh.io import output_file
 
 
 def grid_search(data_training, model, param_grid):
@@ -87,6 +88,8 @@ def visualizations(x_y_actual, x_y_predict, all_with_actual, all_with_pred):
     :return: None. Render the plots.
     """
 
+    # plot 1
+    output_file("plot1.html")
     fig = figure(
         title="Viewing the closeness of Actual vs. Predicting values of the Missing Stock Prices",
         width=950,
@@ -116,6 +119,7 @@ def visualizations(x_y_actual, x_y_predict, all_with_actual, all_with_pred):
     show(fig)
 
     # plot 2
+    output_file("plot2.html")
     fig_act = figure(
         plot_width=475,
         plot_height=300,
@@ -137,6 +141,7 @@ def visualizations(x_y_actual, x_y_predict, all_with_actual, all_with_pred):
     show(row(fig_act, fig_pred))
 
     # plot 3
+    output_file("plot3.html")
     fig = figure(
         title="Positioning the side-by-side plots above in a single view", width=900
     )
