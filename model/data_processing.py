@@ -1,25 +1,32 @@
 import os
-import settings
+import util
 import pandas as pd
 
 
 def data_preprocessing(input_name: str, output_name: str):
-    _data = pd.read_csv(
-        os.path.join(settings.ROOT_DIR, "jupy_note", input_name), sep="\t"
-    )
-    _data.index = range(_data.shape[0])
-    _data.columns = ["y"]
-    _data["x"] = range(_data.shape[0])
+    data = pd.read_csv(os.path.join(util.ROOT_DIR, "jupy_note", input_name), sep="\t")
+    data.index = range(data.shape[0])
+    data.columns = ["y"]
+    data["x"] = range(data.shape[0])
 
     # position of the missing prices
-    _pos_missing = _data.y.str.startswith("Missing")
+    pos_missing = data.y.str.startswith("Missing")
 
-    DATA_MISSING = _data[_pos_missing]
+    data_missing = data[pos_missing]
 
     # training data set
-    DATA_TRAINING = _data[_pos_missing == False]
+    data_training = data[pos_missing == False]
 
-    ACTUAL_PRICES = pd.read_csv(
-        os.path.join(settings.ROOT_DIR, "jupy_note", output_name), header=None
+    actual_prices = pd.read_csv(
+        os.path.join(util.ROOT_DIR, "jupy_note", output_name), header=None
     )
-    return DATA_TRAINING, DATA_MISSING, ACTUAL_PRICES
+
+    data_training = data_training.astype("float")
+    actual_prices = actual_prices.astype("float")
+
+    return data_training.x, data_training.y, data_missing.x, actual_prices
+
+
+input_file = "input00.txt"
+output_file = "output00.txt"
+X_TRAIN, Y_TRAIN, X_TEST, Y_TEST = data_preprocessing(input_file, output_file)

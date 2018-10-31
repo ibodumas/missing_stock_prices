@@ -1,6 +1,7 @@
 """
 This houses all general purpose objects.
 """
+import os
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import pandas as pd
@@ -10,6 +11,11 @@ from bokeh.plotting import figure, show
 from bokeh.models import LabelSet, ColumnDataSource
 from bokeh.layouts import row
 from bokeh.io import output_file
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ACTUAL_COLOR = "navy"
+PREDICTED_COLOR = "firebrick"
+SAVE_MODEL = False
 
 
 def grid_search(data_training, model, param_grid):
@@ -58,9 +64,7 @@ def heatmap(metric, x_axis, y_axis, title):
     plt.figure(figsize=(4, 4))
     plt.subplots_adjust(left=.2, right=0.95, bottom=0.15, top=0.95)
     plt.imshow(
-        np.reshape(list(metric), (4, 4)),
-        interpolation="nearest",
-        cmap=plt.cm.hot
+        np.reshape(list(metric), (4, 4)), interpolation="nearest", cmap=plt.cm.hot
     )
     plt.xlabel("Degree of Spline")
     plt.ylabel("Smoothing Factor")
@@ -68,6 +72,18 @@ def heatmap(metric, x_axis, y_axis, title):
     plt.xticks(np.arange(4), x_axis, rotation=45)
     plt.yticks(np.arange(4), y_axis)
     plt.title(title)
+    plt.show()
+
+
+def plot_actual_predicted(X, y_actual, y_pred):
+    plt.scatter(
+        X, y_actual, marker="o", label="Actual points", color=ACTUAL_COLOR, s=30
+    )
+    plt.plot(X, y_pred, "g-", lw=2.5, label="Fitted Curve", color=PREDICTED_COLOR)
+    plt.title("Plot of Actual Points vs. Fitted Curve")
+    plt.xlabel("x-axis")
+    plt.ylabel("y-axis")
+    plt.legend(loc="upper left")
     plt.show()
 
 
@@ -145,11 +161,10 @@ def visualizations(x_y_actual, x_y_predict, all_with_actual, all_with_pred):
     fig = figure(
         title="Positioning the side-by-side plots above in a single view", width=900
     )
-    fig.scatter(all_with_pred.x, all_with_pred.y, color="firebrick", legend=["Predicted"])
+    fig.scatter(
+        all_with_pred.x, all_with_pred.y, color="firebrick", legend=["Predicted"]
+    )
     fig.scatter(all_with_actual.x, all_with_actual.y, color="navy", legend=["Actual"])
     fig.xaxis[0].axis_label = "Ordered Period (x)"
     fig.yaxis[0].axis_label = "Stock Prices (y)"
     show(fig)
-
-
-
