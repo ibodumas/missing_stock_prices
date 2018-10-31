@@ -2,7 +2,7 @@
 *.idea
 demo
 *.ipynb_checkpoints
-*Pipfile.lock
+Pipfile.lock
 *.joblib
 
 

@@ -32,4 +32,6 @@ class TestRidgePoly(unittest.TestCase):
         util.plot_actual_predicted(X, y, ridge_poly.predict(X))
 
         self.assertEqual(pred, [1, 2, 3, 4, 5])
-        self.assertEqual(ridge_poly.best_params_, {'poly__degree': 2, 'ridgeRregr__alpha': 0})
+        self.assertEqual(
+            ridge_poly.best_params_, {"poly__degree": 2, "ridgeRregr__alpha": 0}
+        )

@@ -36,5 +36,4 @@ test_spline_mse = metrics.mean_squared_error(sp_test_pred_y, y_test)
 
 
 if util.SAVE_MODEL:
-    joblib.dump(spline, 'spline.joblib')
-
+    joblib.dump(spline, "spline.joblib")
