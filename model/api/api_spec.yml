@@ -42,5 +42,3 @@ paths:
                 items:
                   type: number
                   format: float
-
-

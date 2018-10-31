@@ -13,6 +13,7 @@ A time series of a stock's highest price during a trading day (at the New York S
 - Ridge(regularised) Linear Regression
 - Ridge(regularised) Linear Regression (PolynomialFeatures)
 - Times Series Analysis: FaceBook Prophet Library <br>
+&nbsp;&nbsp;&nbsp; - https://facebook.github.io/prophet/docs/quick_start.html<br>
 &nbsp;&nbsp;&nbsp; - https://github.com/facebook/prophet
 
 #### To easily replicate the project:
