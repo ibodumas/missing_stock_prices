@@ -1,0 +1,46 @@
+swagger: '2.0'
+info:
+  description: API Estimating Stock Prices.
+  version: 1.0.0
+  title: Missing Stock Prices
+  contact:
+    name: Ibodumas
+    email: i****@mtu.edu
+  license:
+    name: MIT Licence
+
+produces:
+  - application/json
+
+schemes:
+  - http
+
+basePath: /stock/
+
+paths:
+  /predict:
+    get:
+      operationId: wsgi.predictor
+      summary: Returns a list of price(s).
+      description: Estimate Stock Prices.
+
+      parameters:
+        - in: query
+          name: x
+          required: true
+          description: List or comma separated numerical value(s) corresponding to the date(s).
+          type: string
+
+      responses:
+        200:
+          description: Operation successful
+          schema:
+            type: object
+            properties:
+              prices:
+                type: array
+                items:
+                  type: number
+                  format: float
+
+

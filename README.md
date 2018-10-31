@@ -23,9 +23,20 @@ A RESTful API with OpenAPI 2.0 specifications was developed to interface the bes
 The API allows HTTP GET, with x as query string.
 
 Parameters: <br>
-x - a numerical value corresponding to the date. This value is expected to be within the date range used during model training.
+x - numerical value(s) corresponding to the date(s). This value is expected to be within the date range used during model training.
+
+Request Body <br>
+{<br>
+  &nbsp;&nbsp;&nbsp;&nbsp; "x": [ <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3, <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]  <br>
+}<br>
 
 Response Body <br>
 {<br>
-  &nbsp;&nbsp;&nbsp;&nbsp; "price": 0.3765 <br>
+  &nbsp;&nbsp;&nbsp;&nbsp; "price": [ <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 37.65, <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 56.567 <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]  <br>
 }<br>

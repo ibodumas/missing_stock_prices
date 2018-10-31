@@ -16,6 +16,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTUAL_COLOR = "navy"
 PREDICTED_COLOR = "firebrick"
 SAVE_MODEL = False
+MODEL_PATH = os.path.join(ROOT_DIR, "spline.joblib")
 
 
 def grid_search(data_training, model, param_grid):

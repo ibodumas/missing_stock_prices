@@ -11,6 +11,7 @@ matplotlib = "*"
 bokeh = "*"
 sklearn = "*"
 fbprophet = "*"
+connexion = "*"
 
 [dev-packages]
 
