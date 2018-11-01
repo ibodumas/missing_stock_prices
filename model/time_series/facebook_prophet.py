@@ -17,7 +17,7 @@ x_y_train = pd.concat([x_train, y_train], axis=1)
 changepoint_prior_scale = [0.4, 0.45, 0.5, 0.55, 0.6]
 param_tune = {"param1": changepoint_prior_scale}
 fb_proph = GridSearchCV(
-    FBProphetEstimator(), param_tune, cv=10, scoring="neg_mean_squared_error"
+    FBProphetEstimator(), param_tune, cv=util.CV, scoring=util.MERIC_SCORING
 )
 fb_proph.fit(x_y_train, y_train)
 
@@ -27,4 +27,4 @@ util.plot_actual_predicted(x_train, y_train, fb_proph.predict(x_train))
 
 fb_y_pred = fb_proph.predict(x_test)
 
-test_fb_mse = metrics.mean_squared_error(fb_y_pred, y_test)
+test_fb_err = metrics.mean_absolute_error(fb_y_pred, y_test)

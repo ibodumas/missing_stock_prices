@@ -22,7 +22,7 @@ degree_splines = [2, 3, 4, 5]
 smoothing_factors = np.arange(3, 13, 0.5)
 param_tune = {"param1": degree_splines, "param2": smoothing_factors}
 spline = GridSearchCV(
-    SplineEstimator(), param_tune, cv=10, scoring="neg_mean_squared_error"
+    SplineEstimator(), param_tune, cv=util.CV, scoring=util.MERIC_SCORING
 )
 spline.fit(x_train, y_train)
 
@@ -32,8 +32,8 @@ spline.best_params_
 
 sp_test_pred_y = spline.predict(x_test)
 
-test_spline_mse = metrics.mean_squared_error(sp_test_pred_y, y_test)
+test_spline_err = metrics.mean_absolute_error(sp_test_pred_y, y_test)
 
 
 if util.SAVE_MODEL:
-    joblib.dump(spline, "spline.joblib")
+    joblib.dump(spline, util.MODEL_PATH)

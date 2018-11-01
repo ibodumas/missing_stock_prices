@@ -5,7 +5,7 @@ Base class for Customized estimator, to be used for grid search cross-validation
 from abc import abstractmethod
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
-from scipy.interpolate import UnivariateSpline as spline
+from scipy.interpolate import UnivariateSpline
 from numpy import polyfit, poly1d
 import fbprophet
 
@@ -44,7 +44,7 @@ class SplineEstimator(BaseCustomEstimator):
         super().__init__(param1, param2)
 
     def fit(self, X, y):
-        self.trained_model = spline(X, y, k=self.param1, s=self.param2)
+        self.trained_model = UnivariateSpline(X, y, k=self.param1, s=self.param2)
         return self
 
 
@@ -68,7 +68,12 @@ class FBProphetEstimator(BaseCustomEstimator):
         super().__init__(param1)
 
     def fit(self, X_y, y):
-        model = fbprophet.Prophet(changepoint_prior_scale=self.param1)
+        model = fbprophet.Prophet(
+            changepoint_prior_scale=self.param1,
+            yearly_seasonality=True,
+            weekly_seasonality=True,
+            daily_seasonality=True
+        )
         self.trained_model = model.fit(df=X_y)
         return self
 

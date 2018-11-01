@@ -1,28 +1,23 @@
-import ast
-import util
-from sklearn.externals import joblib
-import numpy as np
-import logging.config
 import connexion
+import logging
 
 
-SAVED_MODEL = joblib.load(util.MODEL_PATH)
-
-
-def predictor(x):
-    try:
-        x = ast.literal_eval(x)
-        pred = SAVED_MODEL.predict(np.array(x))
-        return {"prices": pred.tolist()}
-    except (ValueError, SyntaxError):
-        return 'Invalid request format. Sample input: 2, 4', 404, {'x-error': 'Invalid request'}
-    except Exception:
-        return 'Not Found', 404, {'x-error': 'not found'}
-
-
-if __name__ == "__main__":
+def _build_api():
     logging.basicConfig(level=logging.INFO)
     app = connexion.App(__name__)
-    app.add_api("api_spec.yml")
-    application = app.app
+    app.add_api(
+        "api_spec.yml",
+        strict_validation=True,
+        validate_responses=True,
+        auth_all_paths=True,
+        swagger_ui=True,
+    )
     app.run(port=8080)
+    return app
+
+
+try:
+    API = _build_api()
+except Exception as e:
+    logging.critical("Failed to Load App: {}".format(e))
+    raise

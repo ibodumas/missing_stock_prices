@@ -18,7 +18,7 @@ y_test = data_processing.Y_TEST
 degrees = [2, 3, 4, 5, 6, 7, 8, 9, 10]
 param_tune = {"param1": degrees}
 poly = GridSearchCV(
-    PolyInterpEstimator(), param_tune, cv=10, scoring="neg_mean_squared_error"
+    PolyInterpEstimator(), param_tune, cv=util.CV, scoring=util.MERIC_SCORING
 )
 poly.fit(x_train, y_train)
 
@@ -28,4 +28,4 @@ poly.best_params_
 
 py_test_pred_y = poly.predict(x_test)
 
-test_poly_mse = metrics.mean_squared_error(py_test_pred_y, y_test)
+test_poly_err = metrics.mean_absolute_error(py_test_pred_y, y_test)

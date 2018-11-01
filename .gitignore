@@ -4,6 +4,7 @@ demo
 *.ipynb_checkpoints
 Pipfile.lock
 *.joblib
+jupy_note/test
 
 
 __pycache__/

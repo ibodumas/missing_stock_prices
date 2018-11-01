@@ -20,7 +20,7 @@ basePath: /stock/
 paths:
   /predict:
     get:
-      operationId: wsgi.predictor
+      operationId: predictor.predict
       summary: Returns a list of price(s).
       description: Estimate Stock Prices.
 
