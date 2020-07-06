@@ -28,6 +28,7 @@ def plot_actual_predicted(X, y_actual, y_pred):
     plt.xlabel("Ordered Period (x)")
     plt.ylabel("Stock Prices (y)")
     plt.legend(loc="upper left")
+    plt.imsave
     plt.show()
 
 

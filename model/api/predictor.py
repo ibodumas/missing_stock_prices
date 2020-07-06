@@ -1,6 +1,6 @@
 import ast
 import util
-from sklearn.externals import joblib
+import joblib
 import numpy as np
 
 

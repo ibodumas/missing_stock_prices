@@ -9,7 +9,7 @@ import util
 from model.estimator import SplineEstimator
 from sklearn.model_selection import GridSearchCV
 from sklearn import metrics
-from sklearn.externals import joblib
+import joblib
 import numpy as np
 
 
